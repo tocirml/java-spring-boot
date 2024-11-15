@@ -1,15 +1,14 @@
-# Use the Eclipse alpine official image
-# https://hub.docker.com/_/eclipse-temurin
-FROM eclipse-temurin:21-jdk-alpine
+# Paso 1: Utilizar una imagen base con Java
+FROM openjdk:17-jdk-slim
 
-# Create and change to the app directory.
+# Paso 2: Instalar SWI-Prolog
+RUN apt-get update && apt-get install -y swi-prolog
+
+# Paso 3: Establecer el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copy files to the container image
-COPY . ./
+# Paso 4: Copiar el archivo JAR a la imagen
+COPY target/myproject.jar /app/myproject.jar
 
-# Build the app.
-RUN ./mvnw -DoutputFile=target/mvn-dependency-list.log -B -DskipTests clean dependency:list install
-
-# Run the app by dynamically finding the JAR file in the target directory
-CMD ["sh", "-c", "java -jar target/*.jar"]
+# Paso 5: Establecer el comando de entrada para ejecutar el JAR
+CMD ["java", "-jar", "ProyectoProlog.jar"]
